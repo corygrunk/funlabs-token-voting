@@ -1,5 +1,74 @@
 html body {
-  background: #fff;
-  font-family: 'Lato', Arial, Helvetica, sans-serif;
+  margin: 0;
+  font-family: 'Montserrat', sans-serif;
   font-size: 16px;
+  text-align: center;
+  --red: #EF4A57;
+  --red-dark: #74242B;
+  --blue: #4ECAF6;
+  --blue-dark: #1C5366;
+  --blue-darker: #232E42;
+  --yellow: #FCC619;
+  --white: #FFF;
+  --gray: #999;
+  --gray-dark: #555;
+  background-color: var(--blue);
+}
+
+#wrapper {
+  padding: 70px 20px 120px 20px;
+  background: var(--white);
+}
+
+h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--blue-dark);
+}
+
+h1 span {
+  font-weight: 200;
+}
+
+h1 a {
+  color: var(--blue-dark);
+  text-decoration: none;
+}
+
+p {
+  margin: 10px 0 30px 0;
+  line-height: 150%;
+  font-weight: 200;
+  font-size: 18px;
+  color: var(--blue-darker);
+}
+
+form {
+  margin: 0;
+  display: inline;
+}
+
+form button {
+  background-color: var(--blue);
+  color: white;
+  border: none;
+  padding: 20px 30px;
+  margin: 0 10px 0 0;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+form button:hover {
+  background-color: var(--blue-dark);
+  cursor: pointer;
+}
+
+form.launch button {
+  background-color: var(--red);
+}
+
+form.launch button:hover {
+  background-color: var(--red-dark);
+  cursor: pointer;
 }

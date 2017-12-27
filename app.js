@@ -8,6 +8,7 @@ const http = require('http')
 const express = require('express')
 const dotenv = require('dotenv').config()
 const request = require('request')
+const bodyParser = require('body-parser')
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -15,6 +16,7 @@ const port = process.env.PORT || 5000
 app.set('views', __dirname + '/views')
 app.set('view engine', 'jade')
 app.use(express.static(__dirname + '/public'))
+app.use(bodyParser())
 
 const router = express.Router()
 
@@ -30,43 +32,96 @@ var base = Airtable.base(process.env.AIRTABLE_BASE)
 
 // QUERY AIRTABLE
 
-base('Imported table').select({
-	// Selecting the first 500 records in Grid view:
-	maxRecords: 500,
-	view: "Grid view"
-}).eachPage(function page(records, fetchNextPage) {
-	// This function (`page`) will get called for each page of records.
-
-	records.forEach(function(record) {
-		if (record.get('Silver') > 0) {
-			missionsReq(record.get('Email'))
-		}
-	});
-
-	// To fetch the next page of records, call `fetchNextPage`.
-	// If there are more records, `page` will get called again.
-	// If there are no more records, `done` will get called.
-	fetchNextPage()
-
-}, function done(err) {
-	if (err) { console.error(err); return; }
-})
+var launchVoting = function () {
+	var voterSilverCount = 0
+	var voterGoldCount = 0
+	var voterPlatinumCount = 0
+	
+	base('Imported table').select({
+		// Selecting the first 500 records in Grid view:
+		maxRecords: 500,
+		view: "Grid view"
+	}).eachPage(function page(records, fetchNextPage) {
+		// This function (`page`) will get called for each page of records.
+	
+		records.forEach(function(record) {
+			if (record.get('Silver') > 0) {
+				voterSilverCount++
+				missionsReq(record.get('Email'), 'Silver')
+			}
+			if (record.get('Gold') > 0) {
+				voterGoldCount++
+				missionsReq(record.get('Email'), 'Gold')
+			}
+			if (record.get('Platinum') > 0) {
+				voterPlatinumCount++
+				missionsReq(record.get('Email'), 'Platinum')
+			}
+		})
+	
+		// To fetch the next page of records, call `fetchNextPage`.
+		// If there are more records, `page` will get called again.
+		// If there are no more records, `done` will get called.
+		fetchNextPage()
+	
+	}, function done(err) {
+		if (err) { console.error(err); return; }
+		console.log(voterSilverCount + voterGoldCount + voterPlatinumCount + ' missions launched.')
+	})
+}
 
 // MISSION WEBHOOK REQUEST
-var missionsReq = function (email) {
-	var missionsHook = 'https://api.missions.ai/webhook_trigger/e4f351c0-eb25-11e7-b75f-0a580a1c0534?auth_token=eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE1MTQzOTMzNjksInN1YiI6ImU0ZjM1MWMwLWViMjUtMTFlNy1iNzVmLTBhNTgwYTFjMDUzNCJ9.sktZUDjN-25S89-PYPslg-l44CEmkya6TleIxP1SYUi2cIZK9PfTkLVHLg7laPiv3sejuZ6KdYZQO8IlirzK4A'
+var missionsReq = function (email, tokenType) {
+	var missionsHook = process.env.MISSIONS_WEBHOOK_URL
 
-	var missionsHookBody = '{ "person": "' + email + '"}'
+	var missionsHookBody = '{ "person": "' + email + '", "token": "' + tokenType + '"}'
 	missionsHookBody = (JSON.parse(missionsHookBody))
 
 	request.post({
 		url: missionsHook,
 		form: missionsHookBody
-	}, function(error, response, body){
-		console.log('statusCode:', response && response.statusCode)
-	});
+	}, function(err, response, body){
+		if (err) { console.error(err.body); return; }
+		// TODO: Log errors.
+	})
 }
 
+// GET NUMBER OF TOKENS
+var getNumberOfTokens = function () {
+	var tokenSilverCount = 0
+	var tokenGoldCount = 0
+	var tokenPlatinumCount = 0
+	base('Imported table').select({
+		// Selecting the first 500 records in Grid view:
+		maxRecords: 500,
+		view: "Grid view"
+	}).eachPage(function page(records, fetchNextPage) {
+		// This function (`page`) will get called for each page of records.
+	
+		records.forEach(function(record) {
+			if (record.get('Silver') > 0) {
+				tokenSilverCount++
+			}
+			if (record.get('Gold') > 0) {
+				tokenGoldCount++
+			}
+			if (record.get('Platinum') > 0) {
+				tokenPlatinumCount++
+			}
+		})
+	
+		// To fetch the next page of records, call `fetchNextPage`.
+		// If there are more records, `page` will get called again.
+		// If there are no more records, `done` will get called.
+		fetchNextPage()
+	
+	}, function done(err) {
+		if (err) { console.error(err); return; }
+		console.log(tokenSilverCount + ' silver tokens available.')
+		console.log(tokenGoldCount + ' gold tokens available.')
+		console.log(tokenPlatinumCount + ' platinum tokens available.')
+	})
+}
 
 // MIDDLEWARE
 // ==============================================
@@ -85,9 +140,24 @@ router.use(function(req, res, next) {
 
 router.get('/', function(req, res) {
   res.render('index', {title : 'Site Title'})
-});
+})
 
 app.use('/', router)
+
+// Launch voting when button is clicked:
+router.post('/launch', function(req,res){
+	// console.log(req.body)
+	launchVoting()
+	res.render('index', {title : 'Site Title'})
+})
+
+// Launch counting when button is clicked:
+router.post('/count', function(req,res){
+	// console.log(req.body)
+	getNumberOfTokens()
+	res.render('index', {title : 'Site Title'})
+})
+
 
 
 // START THE SERVER

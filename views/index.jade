@@ -4,8 +4,14 @@ block content
 
 	//- include nav
 
-	.container-fluid
-		.row
-			.col-xs-12
-				h1 Funlabs
-				p A node service to help with token voting.
+	#wrapper
+		h1 <a href='/'>Funlabs <span>Voting Admin</span></a>
+		p Launch token voting or count available tokens.
+
+		form(action='/launch', method='post', class='launch')
+			input(type='hidden', name='launch', value='launch')
+			button(type='submit') Launch Voting
+
+		form(action='/count', method='post', class='count')
+			input(type='hidden', name='count', value='count')
+			button(type='submit') Count Tokens					

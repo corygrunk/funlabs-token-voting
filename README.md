@@ -1,8 +1,3 @@
-Simple Express App Boilerplate
+Fun Labs Token Voting
 ==============================
-
-Express app boilerplate. Express, Jade, Grunt, Bower, Bootstrap, Font-Awesome, Jquery. Ready to be pushed to Heroku or run locally.
-
-To install, run `npm install`
-
-Edit you new app's name in `package.json` and `bower.json`
+This is a node app to check a spreadsheet to see who has voting tokens, then kick off a Mission for each person with tokens.

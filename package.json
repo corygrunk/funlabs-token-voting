@@ -1,0 +1,12 @@
+{
+  "name": "funlabs-token-voting",
+  "version": "0.0.1",
+  "private": "true",
+  "description": "Voting for Funlabs with tokens",
+  "dependencies": {
+    "express": "4.16.x",
+    "jade": "1.11.x"
+  },
+  "devDependencies": {},
+  "scripts": {}
+}

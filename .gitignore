@@ -39,9 +39,5 @@ node_modules
 npm-shrinkwrap.json
 build/Release
 
-#Bower
-component.json
-bower_components
-
 # IDE
 .idea/*

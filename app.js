@@ -139,7 +139,7 @@ router.use(function(req, res, next) {
 // ==============================================
 
 router.get('/', function(req, res) {
-  res.render('index', {title : 'Site Title'})
+  res.render('index', {title : 'Fun Labs Token Voting Admin'})
 })
 
 app.use('/', router)
@@ -148,14 +148,14 @@ app.use('/', router)
 router.post('/launch', function(req,res){
 	// console.log(req.body)
 	launchVoting()
-	res.render('index', {title : 'Site Title'})
+	res.render('index', {title : 'Voting Launched - Fun Labs Token Voting Admin'})
 })
 
 // Launch counting when button is clicked:
 router.post('/count', function(req,res){
 	// console.log(req.body)
 	getNumberOfTokens()
-	res.render('index', {title : 'Site Title'})
+	res.render('index', {title : 'Token Count - Fun Labs Token Voting Admin'})
 })
 
 

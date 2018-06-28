@@ -14,7 +14,7 @@ const app = express()
 const port = process.env.PORT || 5000
 
 app.set('views', __dirname + '/views')
-app.set('view engine', 'jade')
+app.set('view engine', 'pug')
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser())
 

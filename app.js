@@ -37,7 +37,7 @@ var launchVoting = function () {
 	var voterGoldCount = 0
 	var voterPlatinumCount = 0
 	
-	base('Imported table').select({
+	base(process.env.AIRTABLE_BASE_NAME).select({
 		// Selecting the first 500 records in Grid view:
 		maxRecords: 500,
 		view: "Grid view"
